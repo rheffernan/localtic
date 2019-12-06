@@ -133,6 +133,16 @@ return (
           <div>{status}</div>
           <ol>{moves}</ol>
         </div>
+
+         <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Steve Jobs</h5>
+              <h6 class="card-subtitle mb-2 text-muted">steve@apple.com</h6>
+              <p class="card-text">Stay Hungry, Stay Foolish</p>
+              <Board squares={current.squares} onClick={(i) => this.handleClick(i)}/>
+            </div>
+          </div>
+
       </div>
     );
   }
