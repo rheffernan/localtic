@@ -27,6 +27,11 @@ function Square(props) {
 
 
 class Board extends React.Component {
+   constructor(props) {
+    super(props);
+
+    this.state = { employees: [{name:"empty"}] };
+  }
   
   renderSquare(i) {
     return (
@@ -37,11 +42,43 @@ class Board extends React.Component {
   );
   }
 
+   componentDidMount() {
+    var scp = this;
+    fetch('/api/employees')
+      .then(response => response.json())
+      .then(data => scp.setState({ employees: data }));
+  }
+
+  appendEmployee(name, role) {
+    fetch('/api/employees', {
+    method: 'post',
+    body: JSON.stringify({name: name, role: role}),
+    headers: {
+       'Content-Type': 'application/json'
+    }
+    });
+  }
+
   render() {
-    
+     
     return (
       <div>
-        
+        <div>
+           <ul>
+              {this.state.employees.map(item => 
+                 <li key={item.id}>{item.name}</li>
+              )}
+           </ul>
+           <textarea>{this.state.employees[0].name}</textarea>
+           
+          <button onClick={() => this.componentDidMount()}>Refresh</button>
+
+
+          Name <input id="newname" onChange={event => this.setState({ newname: event.target.value })} />
+          Role <input id="newrole" onChange={event => this.setState({ newrole: event.target.value })} />
+          <button onClick={() => this.appendEmployee(this.state.newname, this.state.newrole)}>Save</button>
+        </div>
+
         <div className="board-row">
           {this.renderSquare(0)}
           {this.renderSquare(1)}
