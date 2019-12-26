@@ -42,41 +42,49 @@ class Board extends React.Component {
   );
   }
 
-   componentDidMount() {
+  refreshData() {
     var scp = this;
     fetch('/api/employees')
       .then(response => response.json())
       .then(data => scp.setState({ employees: data }));
   }
 
+  componentDidMount() {
+     this.refreshData();
+  }   
+
   appendEmployee(name, role) {
+    var scp = this;
     fetch('/api/employees', {
     method: 'post',
     body: JSON.stringify({name: name, role: role}),
     headers: {
        'Content-Type': 'application/json'
     }
-    });
+    })
+    .then(response => response.json())
+    .then(data => scp.refreshData());
   }
 
   render() {
      
     return (
-      <div>
-        <div>
-           <ul>
+      <div class="card">
+        <div class="card-body">
+           <table class="table-bordered">
+              <tr><th>Name</th><th>Role</th></tr>
               {this.state.employees.map(item => 
-                 <li key={item.id}>{item.name}</li>
+                 <tr key={item.id}><td>{item.name}</td><td>{item.role}</td></tr>
               )}
-           </ul>
-           <textarea>{this.state.employees[0].name}</textarea>
+           </table>
+           <textarea value={this.state.employees[0].name}/>
            
-          <button onClick={() => this.componentDidMount()}>Refresh</button>
+          <p/><button onClick={() => {this.componentDidMount();}}>Refresh</button>
 
 
-          Name <input id="newname" onChange={event => this.setState({ newname: event.target.value })} />
-          Role <input id="newrole" onChange={event => this.setState({ newrole: event.target.value })} />
-          <button onClick={() => this.appendEmployee(this.state.newname, this.state.newrole)}>Save</button>
+          <p/>Name <input id="newname" onChange={event => this.setState({ newname: event.target.value })} />
+          <p/>Role <input id="newrole" onChange={event => this.setState({ newrole: event.target.value })} />
+          <p/><button onClick={() => {this.appendEmployee(this.state.newname, this.state.newrole);}}>Save</button>
         </div>
 
         <div className="board-row">
